@@ -30,7 +30,7 @@ short PARAMCOLL::read_parameter_file (ifstream & FParameters, const char* file_n
   comment=FParameters.peek();
   if (comment == '#')
   {
-	const int lengthOfLine = 20*65; // max length of line = 20 char * 65 params
+	const int lengthOfLine = 20*67; // max length of line = 20 char * 67 params
 	char temp[lengthOfLine];
 	FParameters.getline(temp,lengthOfLine);
 	thePosition = FParameters.tellg();
@@ -51,9 +51,11 @@ short PARAMCOLL::read_parameter_file (ifstream & FParameters, const char* file_n
 	FParameters >> rainP.PAmplitude;
 	FParameters >> rainP.PLocation;
 	FParameters >> rainP.PWidth;
+	FParameters >> rainP.PShape;	
 	FParameters >> rainP.VAmplitude;
 	FParameters >> rainP.VLocation;
 	FParameters >> rainP.VWidth;
+	FParameters >> rainP.VShape;
 	
 	FParameters >> climateP.theMeanT;
 	FParameters >> climateP.theRangeT;

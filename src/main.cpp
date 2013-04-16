@@ -21,7 +21,12 @@
  * Version 2.6.0: correction of SOIL::balancePsi (see there for details)
  *                    modifications related to "total mass" in PLANT::grow - until now, total mass 
  *                    was actually vegetative mass.
- * Version 2.6.1: in MyTime.cpp:days_loop: division by 365 days corrected from int to float
+ * Version 2.6.1: incorporated algorithms of ReGen 2.0 with variable shape parameters
+ *                added standing crop in daily output; no defragmentation or decomposition, manual reset at start of year
+ *					in MyTime.cpp:days_loop: division by 365 days corrected from int to float
+ * Version 2.7: changes for testing inverse-hypothesis effect
+ *                longest wet period (moistd2 etc.) is now calculated correctly when the soil is moist during the summer
+ *                new parameters based on more years
  */
 
 #include <fstream>
@@ -55,8 +60,7 @@ int main (int argc, const char * argv[])
   int years = 0;
   int trials = 0;
   
-  string RPath =  "../../../Regen/";   // Mac
-//  string RPath =    "..\\Regen\\";   // PC
+  string RPath =  "./../../../Regen/";   // on Mac use single forward slash, on PC use double backslashes
   pRAINPARAMETERS->RFilePath = RPath;
   
   string name_of_rain_file = "somewhere";

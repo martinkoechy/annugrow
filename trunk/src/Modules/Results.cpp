@@ -2,13 +2,11 @@
  *  Results.cpp
  *  intraspecific
  *
- *  Created by Martin Kšchy on Thu Feb 06 2003.
+ *  Created by Martin KÃ¶chy on Thu Feb 06 2003.
  *  Copyright (c) 2003 __MyCompanyName__. All rights reserved.
  *
  */
 
-//#include <vcl.h>	// only for Borland C++ Builder
-//#pragma hdrstop	// only for Borland C++ Builder
 
 #include <fstream>
 #include <iostream>
@@ -79,7 +77,7 @@ RESULTS::RESULTS(const char* baseFileName, int fileInput, const char* ID): theSi
 	theYCCHeader = false;
 	theYLCHeader = false;
 	theYLGHeader = false;
-  thePerHeader = false;
+    thePerHeader = false;
 	thePersistence = true;
 	
 	fileInput == 4 ? theFilebatch = true : theFilebatch=false;
@@ -101,7 +99,7 @@ void RESULTS::setPointers (RAIN* p_Rain, GRID* p_Grid)
 	pRAIN = p_Rain; pGRID = p_Grid;
 	theGridLengthC = pGRID->getNCells(1);
 	theGridLengthR = pGRID->getNCells(2);
-	theGridArea = float(theGridLengthC * theGridLengthR); // changed 2006-01-30
+	theGridSize = float(theGridLengthC * theGridLengthR); // changed 2006-01-30
 }
 
 /*mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
@@ -128,30 +126,30 @@ void RESULTS::copyDailyValues (int day)
 	  theDailyCell.watC[col][row] = pSoil->getWaterC();
 	  theDailyCell.runoff[col][row] = pSoil->getRunoff();
 	  theDailyCell.evtr[col][row] = pSoil->getOAWaterET();
-	  if(theDailyCell.psiA1[col][row] >= -5.0 || 
-		theDailyCell.psiA2[col][row] >= -5.0 || 
-		theDailyCell.psiA3[col][row] >= -5.0 ||
-		theDailyCell.psiA4[col][row] >= -5.0 ) theDailyCell.moist5[col][row] = 1;
-	  else theDailyCell.moist5[col][row] = 0;
-	  if(theDailyCell.psiA1[col][row] >= -3.0 || 
-		 theDailyCell.psiA2[col][row] >= -3.0 || 
-		 theDailyCell.psiA3[col][row] >= -3.0 ||
-		 theDailyCell.psiA4[col][row] >= -3.0 ) theDailyCell.moist3[col][row] = 1;
-	  else theDailyCell.moist3[col][row] = 0;
-	  if(theDailyCell.psiA1[col][row] >= -1.5 || 
-		 theDailyCell.psiA2[col][row] >= -1.5 || 
-		 theDailyCell.psiA3[col][row] >= -1.5 ||
-		 theDailyCell.psiA4[col][row] >= -1.5 ) theDailyCell.moist2[col][row] = 1;
-	  else theDailyCell.moist2[col][row] = 0;
+	  theDailyCell.moist5[col][row] = int(theDailyCell.psiA1[col][row] >= -5.0 || 
+		                                  theDailyCell.psiA2[col][row] >= -5.0 || 
+		                                  theDailyCell.psiA3[col][row] >= -5.0 ||
+		                                  theDailyCell.psiA4[col][row] >= -5.0 );
+	  theDailyCell.moist3[col][row] = int(theDailyCell.psiA1[col][row] >= -3.0 || 
+		                                  theDailyCell.psiA2[col][row] >= -3.0 || 
+							              theDailyCell.psiA3[col][row] >= -3.0 ||
+		                                  theDailyCell.psiA4[col][row] >= -3.0 );
+	  theDailyCell.moist2[col][row] = int(theDailyCell.psiA1[col][row] >= -1.5 || 
+		                                  theDailyCell.psiA2[col][row] >= -1.5 || 
+		                                  theDailyCell.psiA3[col][row] >= -1.5 ||
+		                                  theDailyCell.psiA4[col][row] >= -1.5 );
 	  theDailyCell.S[col][row] = pSoil->getPPlant()->getASpecies();
 	  theDailyCell.mass[col][row] = pSoil->getPPlant()->getMass();
+	  if(day==0) theDailyCell.st_cr[col][row]=0.0;
+	  if(pSoil->getPPlant()->getMass()>theDailyCell.st_cr[col][row]) // test st.crop
+		  theDailyCell.st_cr[col][row] = pSoil->getPPlant()->getMass(); // test st.crop
 	  theDailyCell.seedl[col][row] = int(pSoil->getPPlant()->isSeedling());
 	  theDailyCell.indiv[col][row] = int(pSoil->getPPlant()->isEstablished());
 	  theDailyCell.mature[col][row] = int(pSoil->getPPlant()->isMature());
 	}
   }
   calcDailyValuesAcrossLattice(day);
-  calcAnnualValuesForEachCell();
+  calcAnnualValuesForEachCell(day);
 }
 	  
 /* mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm */
@@ -176,9 +174,10 @@ void RESULTS::calcDailyValuesAcrossLattice (int day)
   long sumMoistDays3 = 0;
   long sumMoistDays2 = 0;
   float sumMass = 0.0;
+  float sumStCr = 0.0;
   long sumSeedl = 0;
   long  sumIndiv = 0;
-  long sumMature = 0;
+	long sumMature = 0;
   
   for (int col = 0; col < theGridLengthC; col++)
   {
@@ -201,41 +200,44 @@ void RESULTS::calcDailyValuesAcrossLattice (int day)
 	  sumMoistDays3 += theDailyCell.moist3[col][row];
 	  sumMoistDays2 += theDailyCell.moist2[col][row];
 	  sumMass += theDailyCell.mass[col][row];
+	  sumStCr += theDailyCell.st_cr[col][row];
 	  sumSeedl += theDailyCell.seedl[col][row];
 	  sumIndiv += theDailyCell.indiv[col][row];
+		theIndivDay[day]+=theDailyCell.indiv[col][row];
 	  sumMature += theDailyCell.mature[col][row];
 	}
 	sumRunoffE += theDailyCell.runoff[col][theGridLengthR-1];
   }
   
   theMDaily.DRain[day] = pRAIN->getRain(day);
-  theMDaily.DMPotentialO[day] = sumOPsi / float(theGridArea);
-  theMDaily.DMPotentialA1[day] = sumA1Psi / float(theGridArea);
-  theMDaily.DMPotentialA2[day] = sumA2Psi / float(theGridArea);
-  theMDaily.DMPotentialA3[day] = sumA3Psi / float(theGridArea);
-  theMDaily.DMPotentialA4[day] = sumA4Psi / float(theGridArea);
-  theMDaily.DMWaterO[day] = sumWaterO / float(theGridArea);
-  theMDaily.DMWaterA1[day] = sumWaterA1 / float(theGridArea);
-  theMDaily.DMWaterA2[day] = sumWaterA2 / float(theGridArea);
-  theMDaily.DMWaterA3[day] = sumWaterA3 / float(theGridArea);
-  theMDaily.DMWaterA4[day] = sumWaterA4 / float(theGridArea);
-  theMDaily.DMWaterC[day] = sumWaterC / float(theGridArea);
-  theMDaily.DMRunoff[day] = sumRunoff / float(theGridArea);
+  theMDaily.DMPotentialO[day] = sumOPsi / float(theGridSize);
+  theMDaily.DMPotentialA1[day] = sumA1Psi / float(theGridSize);
+  theMDaily.DMPotentialA2[day] = sumA2Psi / float(theGridSize);
+  theMDaily.DMPotentialA3[day] = sumA3Psi / float(theGridSize);
+  theMDaily.DMPotentialA4[day] = sumA4Psi / float(theGridSize);
+  theMDaily.DMWaterO[day] = sumWaterO / float(theGridSize);
+  theMDaily.DMWaterA1[day] = sumWaterA1 / float(theGridSize);
+  theMDaily.DMWaterA2[day] = sumWaterA2 / float(theGridSize);
+  theMDaily.DMWaterA3[day] = sumWaterA3 / float(theGridSize);
+  theMDaily.DMWaterA4[day] = sumWaterA4 / float(theGridSize);
+  theMDaily.DMWaterC[day] = sumWaterC / float(theGridSize);
+  theMDaily.DMRunoff[day] = sumRunoff / float(theGridSize);
   theMDaily.DMRunoffE[day] = sumRunoffE / float(theGridLengthC);
-  theMDaily.DMEvTr[day] = sumWaterOAET / float(theGridArea);
-  theMDaily.DMNbrMoistDays5[day] = sumMoistDays5 / float(theGridArea);
-  theMDaily.DMNbrMoistDays3[day] = sumMoistDays3 / float(theGridArea);
-  theMDaily.DMNbrMoistDays2[day] = sumMoistDays2 / float(theGridArea);
-  theMDaily.DMMassGPM2[day] = sumMass /float(theGridArea * cellArea) * 10.0;
-  theMDaily.DSeedlPM2[day] = float(sumSeedl /float(theGridArea * cellArea) * 10000.0);
-  theMDaily.DIndivPM2[day] = float(sumIndiv /float(theGridArea * cellArea) * 10000.0);
-  theMDaily.DMaturePM2[day] =  float(sumMature /float(theGridArea * cellArea) * 10000.0);
+  theMDaily.DMEvTr[day] = sumWaterOAET / float(theGridSize);
+  theMDaily.DMNbrMoistDays5[day] = sumMoistDays5 / float(theGridSize);
+  theMDaily.DMNbrMoistDays3[day] = sumMoistDays3 / float(theGridSize);
+  theMDaily.DMNbrMoistDays2[day] = sumMoistDays2 / float(theGridSize);
+  theMDaily.DMMassGPM2[day] = sumMass /float(theGridSize * cellArea) * 10.0;
+  theMDaily.DMStCrGPM2[day] = sumStCr /float(theGridSize * cellArea) * 10.0;
+  theMDaily.DSeedlPM2[day] = float(sumSeedl /float(theGridSize * cellArea) * 10000.0);
+  theMDaily.DIndivPM2[day] = float(sumIndiv /float(theGridSize * cellArea) * 10000.0);
+  theMDaily.DMaturePM2[day] =  float(sumMature /float(theGridSize * cellArea) * 10000.0);
 }
 
 /*mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
 */
 
-void RESULTS::calcAnnualValuesForEachCell(void)
+void RESULTS::calcAnnualValuesForEachCell(int day)
 {
   for (int col = 0; col < theGridLengthC; col++)
   {
@@ -255,34 +257,38 @@ void RESULTS::calcAnnualValuesForEachCell(void)
       theAnnualSumCell.runoff[col][row] += theDailyCell.runoff[col][row];
       theAnnualSumCell.evtr[col][row] += theDailyCell.evtr[col][row];
 	  if(theDailyCell.moist5[col][row] == 1)
+		// store the accumulated number of wet days in a temporary variable
 		theNbrOfMoistDays5[col][row] ++;
-	  else {
+	  if(theDailyCell.moist5[col][row] == 0 || day == days_in_year-1) {
+		  // if the new wet period is longer than the old one
 		if (theNbrOfMoistDays5[col][row] > theAnnualSumCell.moist5[col][row])
+			// store the new one
 		  theAnnualSumCell.moist5[col][row] = theNbrOfMoistDays5[col][row];
+		  // and reset the temporary variable
 		theNbrOfMoistDays5[col][row] = 0;	 
 	  }
 	  if(theDailyCell.moist3[col][row] == 1)
 		theNbrOfMoistDays3[col][row] ++;
-	  else {
+	  if(theDailyCell.moist5[col][row] == 0 || day == days_in_year-1) {
 		if (theNbrOfMoistDays3[col][row] > theAnnualSumCell.moist3[col][row])
 		  theAnnualSumCell.moist3[col][row] = theNbrOfMoistDays3[col][row];
 		theNbrOfMoistDays3[col][row] = 0;	 
 	  }
 	  if(theDailyCell.moist2[col][row] == 1)
 		theNbrOfMoistDays2[col][row] ++;
-	  else {
+	  if(theDailyCell.moist5[col][row] == 0 || day == days_in_year-1) {
 		if (theNbrOfMoistDays2[col][row] > theAnnualSumCell.moist2[col][row])
 		  theAnnualSumCell.moist2[col][row] = theNbrOfMoistDays2[col][row];
 		theNbrOfMoistDays2[col][row] = 0;	 
 	  }
 	  if(theDailyCell.mass[col][row] > theAnnualSumCell.mass[col][row]) 
 		theAnnualSumCell.mass[col][row] = theDailyCell.mass[col][row];
-	  if(theDailyCell.seedl[col][row] == 1)
-		theAnnualSumCell.seedl[col][row] = 1;	  
-	  if(theDailyCell.indiv[col][row] == 1)
-		theAnnualSumCell.indiv[col][row] = 1;	  
-	  if(theDailyCell.mature[col][row] == 1)
-		theAnnualSumCell.mature[col][row] = 1;
+	  if(theDailyCell.seedl[col][row]) 
+		  theAnnualSumCell.seedl[col][row] = true;	  
+	  if(theDailyCell.indiv[col][row])
+		theAnnualSumCell.indiv[col][row] = true;
+	  if(theDailyCell.mature[col][row])
+		theAnnualSumCell.mature[col][row] = true;
     }
     theAnnualSumCell.runoffE[col] += theDailyCell.runoff[col][theGridLengthR-1];
   }
@@ -314,12 +320,15 @@ void RESULTS::zeroAnnualSums (void)
 	  theAnnualSumCell.moist3[col][row] = 0;
 	  theAnnualSumCell.moist2[col][row] = 0;
 	  theAnnualSumCell.mass[col][row] = 0.0;
-	  theAnnualSumCell.seedl[col][row] = 0;
-	  theAnnualSumCell.indiv[col][row] = 0;	  
-	  theAnnualSumCell.mature[col][row] = 0;
+	  theAnnualSumCell.seedl[col][row] = false;
+	  theAnnualSumCell.indiv[col][row] = false;	
+	  theAnnualSumCell.mature[col][row] = false;
 	}
     theAnnualSumCell.runoffE[col]  = 0.0;
   }
+	for (short d=0; d<days_in_year; d++)
+		theIndivDay[d]=0;
+  
 }
 
 /*mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
@@ -382,29 +391,30 @@ void RESULTS::calcMeanAnnualValues (void)
   }
   
   theMAnnual.ARain =  pRAIN->getAnnualRain();
-  theMAnnual.APotentialO = sumPsiO / float(theGridArea * days_in_year);
-  theMAnnual.APotentialA1 = sumPsiA1 / float(theGridArea * days_in_year);
-  theMAnnual.APotentialA2 = sumPsiA2 / float(theGridArea * days_in_year);
-  theMAnnual.APotentialA3 = sumPsiA3 / float(theGridArea * days_in_year);
-  theMAnnual.APotentialA4 = sumPsiA4 / (theGridArea * days_in_year);
-  theMAnnual.AWaterO = sumWaterO / float(theGridArea * days_in_year);
-  theMAnnual.AWaterA1 = sumWaterA1 / float(theGridArea * days_in_year);
-  theMAnnual.AWaterA2 = sumWaterA2 / float(theGridArea * days_in_year);
-  theMAnnual.AWaterA3 = sumWaterA3 / float(theGridArea * days_in_year);
-  theMAnnual.AWaterA4 = sumWaterA4 / float(theGridArea * days_in_year);
-  theMAnnual.AWaterC = sumWaterC / float(theGridArea * days_in_year);
-  theMAnnual.ARunoff = sumRunoff / float(theGridArea * days_in_year);
+  theMAnnual.APotentialO = sumPsiO / float(theGridSize * days_in_year);
+  theMAnnual.APotentialA1 = sumPsiA1 / float(theGridSize * days_in_year);
+  theMAnnual.APotentialA2 = sumPsiA2 / float(theGridSize * days_in_year);
+  theMAnnual.APotentialA3 = sumPsiA3 / float(theGridSize * days_in_year);
+  theMAnnual.APotentialA4 = sumPsiA4 / (theGridSize * days_in_year);
+  theMAnnual.AWaterO = sumWaterO / float(theGridSize * days_in_year);
+  theMAnnual.AWaterA1 = sumWaterA1 / float(theGridSize * days_in_year);
+  theMAnnual.AWaterA2 = sumWaterA2 / float(theGridSize * days_in_year);
+  theMAnnual.AWaterA3 = sumWaterA3 / float(theGridSize * days_in_year);
+  theMAnnual.AWaterA4 = sumWaterA4 / float(theGridSize * days_in_year);
+  theMAnnual.AWaterC = sumWaterC / float(theGridSize * days_in_year);
+  theMAnnual.ARunoff = sumRunoff / float(theGridSize * days_in_year);
   theMAnnual.ARunoffE = sumRunoffE / float(theGridLengthC);
-  theMAnnual.AEvTr = sumWaterOAET / float(theGridArea);
-  theMAnnual.AMoist5 = sumMoistDays5 / float(theGridArea);
-  theMAnnual.AMoist3 = sumMoistDays3 / float(theGridArea);
-  theMAnnual.AMoist2 = sumMoistDays2 / float(theGridArea);
-  theMAnnual.AMassGPM2 = sumMass /float(theGridArea * cellArea) * 10.0;
-  theMAnnual.ASeedlPM2 = float(sumSeedl) /float(theGridArea * cellArea) * 1.0E4;
-  theMAnnual.AIndivPM2 = float(sumIndiv) /float(theGridArea * cellArea) * 1.0E4;
-  theMAnnual.AMaturePM2 = float(sumMature) /float(theGridArea * cellArea) * 1.0E4;
-  theMAnnual.ASeedsPM2 = float (sumSeeds)/float(theGridArea * cellArea) * 1.0E4;
-  theMAnnual.ASeedbankPM2 = float (sumSeedbank)/float(theGridArea * cellArea) * 1.0E4;
+  theMAnnual.AEvTr = sumWaterOAET / float(theGridSize);
+  theMAnnual.AMoist5 = sumMoistDays5 / float(theGridSize);
+  theMAnnual.AMoist3 = sumMoistDays3 / float(theGridSize);
+  theMAnnual.AMoist2 = sumMoistDays2 / float(theGridSize);
+  theMAnnual.AMassGPM2 = sumMass /float(theGridSize * cellArea) * 10.0;
+  theMAnnual.ASeedlPM2 = float(sumSeedl) /float(theGridSize * cellArea) * 1.0E4;
+  theMAnnual.AIndivPM2 = float(sumIndiv) /float(theGridSize * cellArea) * 1.0E4;
+  theMAnnual.AdIndivPM2 = float(MK_max(theIndivDay, days_in_year)) /float(theGridSize * cellArea) * 1.0E4;
+  theMAnnual.AMaturePM2 = float(sumMature) /float(theGridSize * cellArea) * 1.0E4;
+  theMAnnual.ASeedsPM2 = float (sumSeeds)/float(theGridSize * cellArea) * 1.0E4;
+  theMAnnual.ASeedbankPM2 = float (sumSeedbank)/float(theGridSize * cellArea) * 1.0E4;
 }
 
 /*mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
@@ -420,7 +430,7 @@ void RESULTS::saveParameters (CLIMATE* pCLIMATE, SOILPARAMETERS* pSoilP, SEED_PA
   ParameterDocu.open (theResultsList, std::ios::app);
   
   ParameterDocu << "Date and time: " << ctime(&currentTime) << "\n\n" << endl;
-  ParameterDocu << "Version: 2.6.0\n\n" << endl;
+  ParameterDocu << "Version: 2.7.0\n\n" << endl;
   pGRID->pP->documentation(theResultsList);
   if (!theFilebatch)
   {	pCLIMATE->documentation(theResultsList);
@@ -471,7 +481,7 @@ void RESULTS::saveRainDocumentation (int year)
 
 bool RESULTS::saveDailyValues (int year)
 {
-  if(!theFilebatch) // if(theFilebatch)
+  if(!theFilebatch)// if(theFilebatch)
   {
 	ofstream DLC;
 	DLC.open(theResultsDailyLattCol, std::ios::app);
@@ -500,6 +510,7 @@ bool RESULTS::saveDailyValues (int year)
 	  << "moistD3" << "\t"
 	  << "moistD1.5" << "\t"
       << "mass.g.m2"<< "\t"
+	  << "StCr.g.m2"<< "\t"
 	  << "seedl.m2"	<< "\t"
 	  << "ind.m2"	<< "\t"
 	  << "fl.ind.m2"
@@ -540,7 +551,8 @@ bool RESULTS::saveDailyValues (int year)
 	  << theMDaily.DMNbrMoistDays2[day] << "\t";
     DLC.precision(3);
     DLC
-	  << theMDaily.DMMassGPM2[day]	<< "\t";
+	  << theMDaily.DMMassGPM2[day]	<< "\t"
+	<< theMDaily.DMStCrGPM2[day]	<< "\t";
     DLC.precision(0);
     DLC
 	  << theMDaily.DSeedlPM2[day]	<< "\t"
@@ -571,7 +583,7 @@ bool RESULTS::saveMeanYearlyValues (int year)
   
   if((theFilebatch && year>2) || !theFilebatch)
   {
-  float	sumSeedbank = double(SEEDS::getNumberOfAllSeeds()) / (theGridArea * cellArea) * 10000.0;
+  float	sumSeedbank = double(SEEDS::getNumberOfAllSeeds()) / (theGridSize * cellArea) * 10000.0;
   
 	ofstream YLC;
 	YLC.open(theResultsYearlyLattCol, std::ios::app);
@@ -583,10 +595,10 @@ bool RESULTS::saveMeanYearlyValues (int year)
 	  YLC
 	  << "rain.mm"		<< "\t"
 	  << "O.MPa"		<< "\t"
-	  << "Aa.MPa"		<< "\t"
-	  << "Ab.MPa"		<< "\t"
-	  << "Ac.MPa"		<< "\t"
-	  << "Ad.MPa"		<< "\t"
+	  << "A1.MPa"		<< "\t"
+	  << "A2.MPa"		<< "\t"
+	  << "A3.MPa"		<< "\t"
+	  << "A4.MPa"		<< "\t"
 	  << "O.mm"  << "\t"
 	  << "A1.mm"  << "\t"
 	  << "A2.mm"  << "\t"
@@ -603,6 +615,7 @@ bool RESULTS::saveMeanYearlyValues (int year)
 		<< "mass.g.m2" << "\t"
 		<< "seedl.m2" << "\t"
 	  << "ind.m2"	<< "\t"
+	  << "d.ind.m2" << "\t"
 	  << "fl.ind.m2" << "\t"
 	  << "seeds.m2" << "\t"
 	  << "seedbank.m2"
@@ -644,6 +657,7 @@ bool RESULTS::saveMeanYearlyValues (int year)
 	YLC <<
 	theMAnnual.ASeedlPM2 << "\t" <<
 	theMAnnual.AIndivPM2 << "\t" <<
+	theMAnnual.AdIndivPM2 << "\t" <<
 	theMAnnual.AMaturePM2 << "\t" <<
 	theMAnnual.ASeedsPM2 << "\t" <<
 	theMAnnual.ASeedbankPM2
@@ -839,7 +853,7 @@ bool RESULTS::savePersistence (int maxYears, int year)
 
 void RESULTS::saveVegCover (void)
 {
-  if(!theFilebatch)
+  if(theFilebatch)
   {
   ofstream ParameterDocu;
   ParameterDocu.open (theResultsList, std::ios::app);
@@ -858,4 +872,3 @@ void RESULTS::saveVegCover (void)
     ParameterDocu << endl;
 }
 }
-//#pragma package(smart_init)	// only for Borland C++ Builder

@@ -22,9 +22,11 @@ class RAINPARAMETERS
   float PAmplitude;
   float PLocation;
   float PWidth;
+  float PShape;
   float VAmplitude;
   float VLocation;
   float VWidth;
+  float VShape;
   std::string RFileName;
   std::string RFilePath;
   std::string getLongRFileName(void);

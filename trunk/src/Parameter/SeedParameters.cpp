@@ -2,7 +2,7 @@
  *  SParameters.cpp
  *  intraspecific
  *
- *  Created by Martin Kšchy on Sat May 03 2003.
+ *  Created by Martin KÃ¶chy on Sat May 03 2003.
  *  Copyright (c) 2003 __MyCompanyName__. All rights reserved.
  *
  */
@@ -16,8 +16,8 @@
 void SEED_PARAMETERS::setForAllSpecies (void)
 {
   constSeedbank = true; // set to 'false' for simulating population persistence
-	iniSeedNbr =  15000.0;	// 200/m2
-	iniSeedNbrV = 0.11; // ± 0.11 *100% < Marcelo's data 2002/2003
+	iniSeedNbr =  11200.0;	// mean, controls, 2001-2007, Sternberg, pers. comm, unpublished, 20090615
+	iniSeedNbrV = 0.56; // mean CV, controls, 2001-2007, Sternberg, pers. comm, unpublished, 20090615
 	survRate	= 0.30; //0.25; 0.74-0.78 Russi et al. 1992
 	survRateV	=  0.05;		// 0.05
 	seedbankPersistence = 0.9; //0.8;
@@ -37,7 +37,7 @@ void SEED_PARAMETERS::setForAllSpecies (void)
 	{
 	  AX[i]=aAX[i]; AY[i] = aAY[i];
 	}
-	ActivityV	=  0.05;	// ±0.0
+	ActivityV	=  0.05;	// Â±0.0
 	maxGerm = 1.0;
 }
 
@@ -50,10 +50,10 @@ void SEED_PARAMETERS::documentation (char* filename) const
   ParameterDocu << "Species: \t" << N << endl;
   ParameterDocu << "constSeedbank: \t" << (constSeedbank?"yes":"no") << endl;
   ParameterDocu << "iniSeedNbr (seeds/m2): \t" << iniSeedNbr << endl;
-  ParameterDocu << "iniSeedNbr rel. range ±[0,1]: \t" << iniSeedNbrV << endl;
+  ParameterDocu << "iniSeedNbr rel. range Â±[0,1]: \t" << iniSeedNbrV << endl;
   ParameterDocu << "persistence of old SB [0,1]: \t" << seedbankPersistence << endl;
   ParameterDocu << "survRate [0,1]: \t" << survRate << endl;
-  ParameterDocu << "survRate range ±[0,1]: \t" << survRateV << endl;
+  ParameterDocu << "survRate range Â±[0,1]: \t" << survRateV << endl;
   ParameterDocu << "granivory threshold (seeds/m2): \t" << granivoryThreshold << endl;
   ParameterDocu << "density control: \n";
   ParameterDocu << " exponent: \t" << DD << endl;
@@ -84,7 +84,8 @@ cSPTypMes::cSPTypMes (void)
   
   //iniSeedNbr =  38400.0;		// 2002-09, Marcelo
   //iniSeedNbr = 44000; // 2003-09, Marcelo
-  iniSeedNbr = 30000.0; // mean 2001...2003
+  iniSeedNbr = 21000.0; // mean of controls, 2001-2007, Sternberg, pers. comm, unpublished, 20090615
+  iniSeedNbrV = 0.43; // mean CV of controls, 2001-2007, Sternberg, pers. comm, unpublished, 20090615
   DD =  0.77; DDv = 0.02; // 0.77 for 'En Ya'aqov 2002
   PsiB50m	=  0.00;	//
   PsiB50b	= -0.67;	// -1.4 etwa Mittelwert
@@ -94,7 +95,7 @@ cSPTypMes::cSPTypMes (void)
   DryDaysMax	=  7;		// very long, 1 yr, J. Kigel. pers. comm
   
   maxGerm = 1.0; // 0.65: 2001, 2002: Marcelo
-  ActivityV	=  0.05;	// ±0.0
+  ActivityV	=  0.05;	// Â±0.0
   
   float aAX [8] = {0.0, 45.0, 105.0, 135.0, 170.0, 210.0, 285.0, 0.0};
   float aAY [8] = {0.2, 0.83, 0.5, 0.4, 0.4, 0.4, 0.4, 0.0}; // Bromus fasc.
@@ -111,7 +112,8 @@ cSPTypMed::cSPTypMed (void)
   
   //iniSeedNbr =  23000.0;		// 2002-09, Marcelo
   //iniSeedNbr = 16000.0;   // 2003-09, Marcelo
-  iniSeedNbr = 17000.0; // mean 2001...2003
+	iniSeedNbr = 14500; // mean of controls, 2001-2007, Sternberg, pers. comm, unpublished, 20090615
+	iniSeedNbrV = 0.32; // mean CV of controls, 2001-2007, Sternberg, pers. comm, unpublished, 20090615
   
   DD = 0.77; DDv = 0.02; // 0.75 for Matta 2002
   PsiB50m	=  0;
@@ -122,7 +124,7 @@ cSPTypMed::cSPTypMed (void)
   DryDaysMax	=  7;   // very long, 1 yr, J. Kigel. pers. comm
   maxGerm = 1.0; // 0.75
 	
-  ActivityV	=  0.05;	// ±0.0
+  ActivityV	=  0.05;	// Â±0.0
   float aAX [8] = {0.0, 45.0, 105.0, 135.0, 170.0, 225.0, 285.0, 0.0};
   float aAY [8] = {0.0,  0.20,  0.3,   0.4,  0.45,  0.35,  0.2,  0.0};
   for (int i = 0; i < 8; i++)
@@ -137,12 +139,13 @@ cSPTypSem::cSPTypSem (void)
   
   // iniSeedNbr =  8000.0;		// 2002-09, Marcelo
   // iniSeedNbr = 18000.0;   // 2003-09, Marcelo
-  iniSeedNbr = 11000.0; // mean 2001...2003
+	iniSeedNbr = 8800; // mean of controls, 2001-2007, Sternberg, pers. comm, unpublished, 20090615
+	iniSeedNbrV = 0.39; // mean CV of controls, 2001-2007, Sternberg, pers. comm, unpublished, 20090615
   DD = 0.77; DDv = 0.02; // 0.94 for Lahav 2002
   PsiB50m	=  0.00;	//
-  PsiB50b	= -0.87;	// -1.07 © Katja Ts germination experiment
+  PsiB50b	= -0.87;	// -1.07 Â© Katja Ts germination experiment
   PsiB50S	=  0.5;		// 0.35 <Allen et al. 2000
-  thetaH	= 31.0; 	// 28.0 © Katja Ts germination experiment
+  thetaH	= 31.0; 	// 28.0 Â© Katja Ts germination experiment
   Tmin		=  0.0;		// 0 <Allen et al. 2000
   DryDaysMax	=  7;		// very long, 1 yr, J. Kigel. pers. comm
 							//iniSeedNbr =  60000.0;		// 200/m2
@@ -156,7 +159,7 @@ cSPTypSem::cSPTypSem (void)
   {
     AX[i]=aAX[i]; AY[i] = aAY[i];
   }
-  ActivityV	=  0.05;	// ±0.0
+  ActivityV	=  0.05;	// Â±0.0
 }
 
 cSPTypAri::cSPTypAri (void)
@@ -166,8 +169,8 @@ cSPTypAri::cSPTypAri (void)
   
   //iniSeedNbr =  400.0;		// 400; 2002-09, Marcelo
   //iniSeedNbr = 1000.0;   // 2003-09, Marcelo
-  iniSeedNbr = 500.0;// mean 2001...2003
-  iniSeedNbrV = 0.5;		// 0.5; 2002-09, Marcelo
+	iniSeedNbr = 500; // mean of controls, 2001-2007, Sternberg, pers. comm, unpublished, 20090615
+	iniSeedNbrV = 1.0; // mean CV of controls, 2001-2007, Sternberg, pers. comm, unpublished, 20090615
   DD = 0.77; DDv = 0.02; // 0.95 for SedeBoqer 2002
   PsiB50m	=  0.000;	// fitted to Kigel et al.; 0.0 from Allen et al. 2000
   PsiB50b	= -1.03;	// fitted to Kigel et al.; -0.73 from Allen et al. 2000
@@ -183,7 +186,7 @@ cSPTypAri::cSPTypAri (void)
     AX[i]=aAX[i]; AY[i] = aAY[i];
   }
   maxGerm = 1.0; // 0.85: 2001, 2002: Marcelo
-  ActivityV	=  0.05;	// ±0.0
+  ActivityV	=  0.05;	// Â±0.0
 }
 
 cSPAveSteri::cSPAveSteri (void)
@@ -201,7 +204,7 @@ cSPAveSteri::cSPAveSteri (void)
   DryDaysMax	=  7;		// very long, 1 yr, J. Kigel. pers. comm
 							//iniSeedNbr =  60000.0;		// 200/m2
 //  maxGerm = 0.96; // Kew, Adkins & Peters 2000, 
-  ActivityV	=  0.05;	// ±0.0
+  ActivityV	=  0.05;	// Â±0.0
   
   float aAX [8] = {0.0, 45.0, 105.0, 135.0, 170.0, 210.0, 270.0, 0.0};
   float aAY [8] = {0.0,  0.30,  0.6,   0.54,  0.24,  0.18,  0.12,0.0};
@@ -218,9 +221,9 @@ cSPBiscDid::cSPBiscDid (void)
   
 //  iniSeedNbr =  20000.0;		// 200/m2
   PsiB50m	=  0.00;	//
-  PsiB50b	= -0.94;	// -0.94 © Katja Ts germination experiment
+  PsiB50b	= -0.94;	// -0.94 Â© Katja Ts germination experiment
   PsiB50S	=  0.35;		// 0.35 <Allen et al. 2000
-  thetaH		= 21.0; 	// 21.0 © Katja Ts germination experiment
+  thetaH		= 21.0; 	// 21.0 Â© Katja Ts germination experiment
   Tmin		=  0.0;		// 0 <Allen et al. 2000
   DryDaysMax	=  7;		// very long, 1 yr, J. Kigel. pers. comm
 							//iniSeedNbr =  60000.0;		// 200/m2
@@ -230,8 +233,8 @@ cSPBiscDid::cSPBiscDid (void)
   {
     AX[i]=aAX[i]; AY[i] = aAY[i];
   }
-//  maxGerm = 0.72; // Tielbšrger exp., 0.95 Marcelo pers. comm.
-  ActivityV	=  0.05;	// ±0.0
+//  maxGerm = 0.72; // TielbÃ¶rger exp., 0.95 Marcelo pers. comm.
+  ActivityV	=  0.05;	// Â±0.0
 }
 
 cSPBraDist::cSPBraDist (void)
@@ -248,7 +251,7 @@ cSPBraDist::cSPBraDist (void)
 	Tmin		=  0.0;		// Allen et al. 2000
 	DryDaysMax	=  7;		// very long, 1 yr, J. Kigel. pers. comm
 	maxGerm = 1.0; // Kew, Kigel et al. 2002
-	ActivityV	=  0.05;	// ±0.0
+	ActivityV	=  0.05;	// Â±0.0
 	
 	//iniSeedNbr =  60000.0;		// 200/m2
 	float aAX [8] = {0.0, 45.0, 105.0, 135.0, 170.0, 225.0, 285.0, 0.0};
@@ -277,8 +280,8 @@ cSPBromFasc::cSPBromFasc (void)
   {
     AX[i]=aAX[i]; AY[i] = aAY[i];
   }
-//  maxGerm = 0.98; // 0.98 Tielbšrger exp., 0.98 Marcelo exp.
-	ActivityV	=  0.05;	// ±0.0
+//  maxGerm = 0.98; // 0.98 TielbÃ¶rger exp., 0.98 Marcelo exp.
+	ActivityV	=  0.05;	// Â±0.0
 }
 
 cSPCarrAnn::cSPCarrAnn (void)
@@ -287,9 +290,9 @@ cSPCarrAnn::cSPCarrAnn (void)
   setForAllSpecies();
 
 	PsiB50m	=  0.0;	// fitted to Kigel et al.
-	PsiB50b	= -1.4; // -1.43 < Allen et al. 2000, -1.09 © Katja Ts germination experiment
+	PsiB50b	= -1.4; // -1.43 < Allen et al. 2000, -1.09 Â© Katja Ts germination experiment
 	PsiB50S	=  0.92;	// 0.92 < Allen et al. 2000
-	thetaH	= 26.0; 	// 25 © Katja Ts germination experiment; 26 Allen et al. 2000
+	thetaH	= 26.0; 	// 25 Â© Katja Ts germination experiment; 26 Allen et al. 2000
 	Tmin		=  0.0;		// 0 Allen et al. 2000
 	DryDaysMax	=  7;		// very long, 1 yr, J. Kigel. pers. comm
 	//iniSeedNbr =  60000.0;		// 100/m2 Kigel et al. 2002
@@ -299,8 +302,8 @@ cSPCarrAnn::cSPCarrAnn (void)
   {
     AX[i]=aAX[i]; AY[i] = aAY[i];
   }
-//  maxGerm = 0.53; // Tielbšrger exp., 0.75 Marcelo exp.
-	ActivityV	=  0.02;	// ±0.0
+//  maxGerm = 0.53; // TielbÃ¶rger exp., 0.75 Marcelo exp.
+	ActivityV	=  0.02;	// Â±0.0
 }
 
 cSPCriDeli::cSPCriDeli (void)
@@ -311,9 +314,9 @@ cSPCriDeli::cSPCriDeli (void)
 //  iniSeedNbr =  15000.0;		// 200/m2
   
   PsiB50m	=  0.00;	//
-  PsiB50b	= -1.07;	// -1.07 © Katja Ts germination experiment
+  PsiB50b	= -1.07;	// -1.07 Â© Katja Ts germination experiment
   PsiB50S	=  0.35;		// 0.35 <Allen et al. 2000
-  thetaH		= 28.0; 	// 28.0 © Katja Ts germination experiment
+  thetaH		= 28.0; 	// 28.0 Â© Katja Ts germination experiment
   Tmin		=  0.0;		// 0 <Allen et al. 2000
   DryDaysMax	=  7;		// very long, 1 yr, J. Kigel. pers. comm
 							//iniSeedNbr =  60000.0;		// 200/m2
@@ -325,7 +328,7 @@ cSPCriDeli::cSPCriDeli (void)
   {
     AX[i]=aAX[i]; AY[i] = aAY[i];
   }
-  ActivityV	=  0.05;	// ±0.0
+  ActivityV	=  0.05;	// Â±0.0
 }
 
 cSPFilDes::cSPFilDes (void)
@@ -335,9 +338,9 @@ cSPFilDes::cSPFilDes (void)
    //iniSeedNbr =  60000.0;		// 400/m2
 
 	PsiB50m	=  0.0;
-	PsiB50b	= -1.16; // -0.305 < Meidan 1990, -1.16 © Katja Ts germination experiment
+	PsiB50b	= -1.16; // -0.305 < Meidan 1990, -1.16 Â© Katja Ts germination experiment
 	PsiB50S	=  0.344;	// 0.037 < Meidan 1990, 0.344 < Allen et al. 2000
-	thetaH	= 57.0; 	// 12.6 < Meidan 1990, 57 © Katja Ts germination experiment;
+	thetaH	= 57.0; 	// 12.6 < Meidan 1990, 57 Â© Katja Ts germination experiment;
 	Tmin		=  0.0;		// 0;
 	DryDaysMax	= 7;		// 7, my guess
   float aAX [8]  = {0.0, 45.0, 75.0, 105.0, 165.0, 195.0, 240.0, 0.0};
@@ -346,8 +349,8 @@ cSPFilDes::cSPFilDes (void)
   {
     AX[i]=aAX[i]; AY[i] = aAY[i];
   }
-//  maxGerm = 0.40; // Tielbšrger exp., 0.86 Marcelo exp.
-	ActivityV	=  0.05;	// ±0.0
+//  maxGerm = 0.40; // TielbÃ¶rger exp., 0.86 Marcelo exp.
+	ActivityV	=  0.05;	// Â±0.0
 }
 
 cSPHippUni::cSPHippUni (void)
@@ -356,9 +359,9 @@ cSPHippUni::cSPHippUni (void)
    setForAllSpecies();
 
 	PsiB50m	=  0.0;	// 
-	PsiB50b	= -0.51;	// -0.5 © Katja Ts germination experiment
+	PsiB50b	= -0.51;	// -0.5 Â© Katja Ts germination experiment
 	PsiB50S	=  0.345;		// 0.345 < Allen et al. 2000
-	thetaH		= 35.0; 	// 35.0 © Katja Ts germination experiment
+	thetaH		= 35.0; 	// 35.0 Â© Katja Ts germination experiment
 	Tmin		=  0.0;		// 0 < Allen et al. 2000
 	DryDaysMax	=  7;		// very long, 1 yr, J. Kigel. pers. comm
 	//iniSeedNbr =  60000.0;		// 200/m2
@@ -368,8 +371,8 @@ cSPHippUni::cSPHippUni (void)
   {
     AX[i]=aAX[i]; AY[i] = aAY[i];
   }
-//  maxGerm = 0.13; // Tielbšrger exp., 0.48 Marcelo exp.
-	ActivityV	=  0.01;	// ±0.0
+//  maxGerm = 0.13; // TielbÃ¶rger exp., 0.48 Marcelo exp.
+	ActivityV	=  0.01;	// Â±0.0
 }
 
 cSPHymCir::cSPHymCir (void)
@@ -391,7 +394,7 @@ cSPHymCir::cSPHymCir (void)
     AX[i]=aAX[i]; AY[i] = aAY[i];
   }
 //  maxGerm = 0.31; // Kigel report 2002, 0.50 Marcelo exp.
-	ActivityV	=  0.05;	// ±0.0
+	ActivityV	=  0.05;	// Â±0.0
 }
 
 cSPRebPin::cSPRebPin (void)
@@ -402,9 +405,9 @@ cSPRebPin::cSPRebPin (void)
   //iniSeedNbr =  400.0;		// 200/m2
 //	iniSeedNbrV = 0.5;		// 2002-09, Marcelo
 	PsiB50m	=  0.0;
-	PsiB50b	= -0.92; // -0.351 <Meidan 1990, -0.92 © Katja Ts germination experiment
+	PsiB50b	= -0.92; // -0.351 <Meidan 1990, -0.92 Â© Katja Ts germination experiment
 	PsiB50S	=  0.345;	// 0.189 <Meidan 1990; < Allen et al. 2000
-	thetaH	= 23.0; 	// 41.4 <Meidan 1990, 23.0 © Katja Ts germination experiment
+	thetaH	= 23.0; 	// 41.4 <Meidan 1990, 23.0 Â© Katja Ts germination experiment
 	Tmin		=  0.0;		// 0;
 	DryDaysMax	=  7;		// 7, my guess
   float aAX [8] = {0.0, 45.0, 75.0, 105.0, 135.0, 185.0, 250.0, 0.0};
@@ -414,7 +417,7 @@ cSPRebPin::cSPRebPin (void)
     AX[i]=aAX[i]; AY[i] = aAY[i];
   }
 //  maxGerm = 0.76; // Kigel report 2002
-	ActivityV	=  0.05;	// ±0.0			
+	ActivityV	=  0.05;	// Â±0.0			
 }
 
 cSPSchisArab::cSPSchisArab (void)
@@ -436,7 +439,7 @@ cSPSchisArab::cSPSchisArab (void)
     AX[i]=aAX[i]; AY[i] = aAY[i];
   }
 //  maxGerm = 0.35; // Meidan 1990, 1.0 Marcelo exp.
-	ActivityV	=  0.05;	// ±0.0			
+	ActivityV	=  0.05;	// Â±0.0			
 }
 
 cSPStipCap::cSPStipCap (void)
@@ -457,8 +460,8 @@ cSPStipCap::cSPStipCap (void)
   {
     AX[i]=aAX[i]; AY[i] = aAY[i];
   }
-//  maxGerm = 0.80; // Tielbšrger exp., 0.9 Marcelo exp.
-	ActivityV	=  0.05;	// ±0.0
+//  maxGerm = 0.80; // TielbÃ¶rger exp., 0.9 Marcelo exp.
+	ActivityV	=  0.05;	// Â±0.0
 }
 
 
@@ -480,8 +483,8 @@ cSPValHis::cSPValHis (void)
   {
     AX[i]=aAX[i]; AY[i] = aAY[i];
   }
-//  maxGerm = 0.76; // Tielbšrger exp., 0.98 Marcelo exp.
-	ActivityV	=  0.05;	// ±0.0
+//  maxGerm = 0.76; // TielbÃ¶rger exp., 0.98 Marcelo exp.
+	ActivityV	=  0.05;	// Â±0.0
 }
 
 cSPSeedBatch::cSPSeedBatch (void)

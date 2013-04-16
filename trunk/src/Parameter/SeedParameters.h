@@ -34,7 +34,7 @@ class SEED_PARAMETERS
 										//  higher values increase 
 										//  population persistence slightly
 		
-		  bool constSeedbank; // use the same number of seeds each year
+		bool constSeedbank; // use the same number of seeds each year
 		float iniSeedNbr; // mean number per square metre
 										//  C.Lortie, pers. comm.
 										//  species with light seeds (<0.08 mg) c. 100
@@ -66,7 +66,7 @@ class SEED_PARAMETERS
                     
     float AX [8]; // no longer used
     float AY [8]; // no longer used
-    float seedbankPersistence;
+    float seedbankPersistence; //
 	float granivoryThreshold; // number of seeds/m2 when granivory sets in
 	float ActivityV; // variability of germinability
 	

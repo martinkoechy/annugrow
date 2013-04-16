@@ -150,15 +150,12 @@ bool PLANT::updatePlant (int day, bool hasGerminated)
 	{
 		grow (MK_max(psi, n_layers)); // ??? hier noch berücksichtigen, dass Wasser
 										 // aus Nachbarzelle aufgebraucht werden kann.
-	  
-		resourceUptake();
-				
 		loseMass (0.0); // nothing happening yet
 
 		if (theMass/theOldMass < 1.001)
 		  wilting();
 	}
-		// prevent germination when cell is occupied or after successful generation
+		// prevent germination when cell is occupied or after successful germination
 	if (theMass > 0.0)
 		return true;	// occupied
 	else
@@ -250,33 +247,35 @@ because growthRate() is a function of mass.
 
 void PLANT::grow (float psiRoots)
 {
-		float newGrowth = 0.0;
-		float newReprTissue = 0.0;
-		
-		newGrowth = (theMass-theReprTissue) * growthRate(psiRoots); // changed in 2.6.0
-		
-		//--- allocate some mass to produce fruits ---
-		if (theMass > pP->MassFlowering)
+	float newGrowth = 0.0;
+	float newReprTissue = 0.0;
+	
+	resourceUptake();
+	
+	newGrowth = (theMass-theReprTissue) * growthRate(psiRoots); // changed in 2.6.0
+	
+	//--- allocate some mass to produce fruits ---
+	if (theMass > pP->MassFlowering)
+	{
+		newReprTissue = newGrowth * pP->AllocationRepro;
+		newGrowth -= newReprTissue;
+		if (theMass > pP->MassFlowering + pP->MassFruit)
 		{
-			newReprTissue = newGrowth * pP->AllocationRepro;
-			newGrowth -= newReprTissue;
-            if (theMass > pP->MassFlowering + pP->MassFruit)
-			{
-              if (theMatureUpdated == false)
-                {	theMatureIndividuals++; theMatureUpdated = true;}
-			  theIsMature = true;
-			}
-			else
-			  theIsMature = false;
+			if (theMatureUpdated == false)
+			{	theMatureIndividuals++; theMatureUpdated = true;}
+			theIsMature = true;
 		}
-		
-		theReprTissue += newReprTissue;// add to total reproductive tissue
-		theOldMass = theMass;
+		else
+			theIsMature = false;
+	}
+	
+	theReprTissue += newReprTissue;// add to total reproductive tissue
+	theOldMass = theMass;
+	if (theMass > theMaxMass)
 		theMass += (newGrowth + newReprTissue); // add produced mass to 
-												//  existing mass; changed in 2.6.0
-											
-		if (theMass > theMaxMass) theMaxMass = theMass;
-    theTotalDailyMass += theMass;
+	//  existing mass; changed in 2.6.0
+	
+	theTotalDailyMass += theMass;
 }
 
 
@@ -291,12 +290,17 @@ The growth rate depends on the soil moisture and the present mass
 float PLANT::growthRate (float psiRoots)
 {
     float RGR = 0.0;
-    float T = pTIME->getTemperature();
   
 	// the slope (first derivative of logistic growth function)
-		RGR = pP->RGR_Max - pP->RGR_Max/pP->MassMax*theMass; // Reproductive mass is contributing to RGR and RGR is based on total mass.
-        if (RGR < 0.0) RGR = 0.0;
+	RGR = pP->RGR_Max - pP->RGR_Max/pP->MassMax*theMass; // Reproductive mass is contributing to RGR and RGR is based on total mass.
+	RGR += dr250()*0.01-0.005; // add a little variation
+	if (RGR < 0.0) RGR = 0.0; // make sure RGR is not negative
 		
+    // effect of seasonal temperature
+	float T = pTIME->getTemperature();
+    if (T<25.0)
+		RGR *= exp(-1.7329+0.06931*T); // Q10 rule
+	
 	// effect of soil moisture, shrub cover, and nutrients
     float limitations [] = {
       relativeWetness(psiRoots), 
@@ -306,12 +310,8 @@ float PLANT::growthRate (float psiRoots)
       
     RGR *= MK_min(limitations, 3);
 	 
-	  RGR *= suppression(); // added 2005-02-23
-	
-    // effect of seasonal temperature 
-    if (T<25.0)
-		RGR *= exp(-1.7329+0.06931*T); // Q10 rule
-	std::cout<< RGR << std::endl;
+	RGR *= suppression(); // added 2005-02-23
+
     return exp(RGR)-1.0; // convert from RGR to absolute GR
 }
 
@@ -350,7 +350,7 @@ float PLANT::suppression (void)
   else if (theMass > pP->MassCompetition1)
 	neighbours = 6;
   
-  float K = pP->Home;
+	float K = pP->Home;
   float iNb = 1.0-K;
 
 	if (!neighbours)
@@ -358,10 +358,10 @@ float PLANT::suppression (void)
 	else
 	  for (short c = 0; c < neighbours; c++)
 		K += (pSNeighbourhood[c]->getResourceShare(theMass))/float(neighbours) * iNb;
-
+	
 	if (K < pP->DDMortality) // density-dependent mortality
 	  K = 0.0;
-	
+
 	return K*K;
 }
 
@@ -532,7 +532,6 @@ int PLANT::getCohorts (void) const
 
 long PLANT::getNumberOfPlants (void)
 {
-	theNumberOfAllPlants+=0;
     return theNumberOfAllPlants;
 }
 

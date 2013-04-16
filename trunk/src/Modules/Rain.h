@@ -73,7 +73,7 @@ public:
 protected:
 	float theDays[days_in_year];
 	void calcRain(void);
-	valarray <float> calcGauss (valarray <float> days, float height, float location, float width, int exponent = 2);
+	valarray <float> calcGauss (valarray <float> days, float height, float location, float width, float exponent = 2.0);
 };
 
 #endif

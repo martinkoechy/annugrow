@@ -145,24 +145,15 @@ void ReGen::drawYear (void)
   theAnnualRain = (theRainDB [theYear]).sum();
 }
 
-valarray <float> ReGen::calcGauss (valarray <float> days, float H, float X, float W, int d)
+valarray <float> ReGen::calcGauss (valarray <float> days, float H, float X, float W, float S)
 {
-  /* R Code
-# Gauss-Funktion für Ermittlung der Regenwahrscheinlichkeit und 
-# der mittleren Regenmenge an einem Regentag
-   gauss <- function (Tag, Amplitude, Lage, Breite, Exponent=2) {
-	 Monat = (Tag/365*12 + 6 - Lage) %% 12 + Lage - 6
-	 G = Amplitude*exp(-(Monat-Lage)^Exponent/(2*Breite^2))
-	 return(G)
-   }
-   */
-  days *= (12.0/365.0);
-  days += (6.0 - X);
-  for (int i = 0; i < days_in_year; i++)
-	days[i] = fmod(days[i],12.0F);
-  days += (X - 6.0);
-  
-  valarray <float> G = H * exp(-pow(days - X,d)/(2.0*W*W));
+	/* version 2.6.1: adapted to ReGen 2.0   */
+	days += (182.0 - X);
+	for (int i = 0; i < days_in_year; i++)
+		days[i] = fmod(days[i],365.0F);
+	days += (X - 182.0);
+	
+	valarray <float> G = H * exp(-pow(abs(days - X), S)/(2.0*pow(W, S)));
   return G;
 }
 
@@ -184,7 +175,7 @@ void ReGen::calcRain (void)
 */  
   valarray <float> days (theDays, days_in_year);
   valarray <float> rainProb (days_in_year);
-  rainProb = calcGauss(days, pP->PAmplitude, pP->PLocation, pP->PWidth);
+  rainProb = calcGauss(days, pP->PAmplitude, pP->PLocation, pP->PWidth, pP->PShape);
 
   valarray <float> rainfall (0.0, days_in_year);
   for (int i = 0; i < days_in_year; i++)
@@ -192,7 +183,7 @@ void ReGen::calcRain (void)
 	  rainfall[i] = 1.0;
   
   valarray <float> meanRainVolume (days_in_year);
-  meanRainVolume = calcGauss(days, pP->VAmplitude, pP->VLocation, pP->VWidth, 4);
+  meanRainVolume = calcGauss(days, pP->VAmplitude, pP->VLocation, pP->VWidth, pP->VShape);
   valarray <float> RegenVolume (days_in_year);
   valarray <float> zexp (days_in_year);
   for (int i = 0; i < days_in_year; i++)

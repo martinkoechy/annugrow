@@ -2,11 +2,13 @@
  *  MyTime.cpp
  *  intraspecific
  *
- *  Created by Martin Kšchy on Thu Feb 06 2003.
+ *  Created by Martin KÃ¶chy on Thu Feb 06 2003.
  *  Copyright (c) 2003 __MyCompanyName__. All rights reserved.
  *
  */
 
+//#include <vcl.h>			// for Borland C++ Builder
+//#pragma hdrstop			// for Borland C++ Builder
 
 #include <iostream>
 #include <fstream>
@@ -76,7 +78,7 @@ void TIME::years_loop (int run_years)
 	loop = getResults(run_years);	// after each year
 	if (loop == false)// check if population is extinct
 	  theYear = run_years; // stop loop
-	pRESULTS->saveVegCover();
+	if(theYear%10==3) pRESULTS->saveVegCover();
   }
 }
 
@@ -148,22 +150,21 @@ bool TIME::getResults (int maxYears)
   
   if (theOutputDetail)	// if only one trial, produce detailed output
   {
-	if (maxYears <= 5)
-	pRESULTS->saveDailyValues(theYear);
-//			pRESULTS->saveYearlyLattAsGrid();
-//			pRESULTS->saveYearlyRunoffAsGrid();
-//			pRESULTS->saveYearlyPotA1AsGrid();
-//			pRESULTS->saveYearlyPotA2AsGrid();
-//			pRESULTS->saveYearlyPotA3AsGrid();
-//			pRESULTS->saveYearlyPotA4AsGrid();
-//			pRESULTS->saveYearlyCWaterAsGrid();
-      
+	  if (maxYears <= 5) {
+		pRESULTS->saveDailyValues(theYear);
+			pRESULTS->saveYearlyLattAsGrid();
+			pRESULTS->saveYearlyRunoffAsGrid();
+			pRESULTS->saveYearlyPotA1AsGrid();
+			pRESULTS->saveYearlyPotA2AsGrid();
+			pRESULTS->saveYearlyPotA3AsGrid();
+			pRESULTS->saveYearlyPotA4AsGrid();
+			pRESULTS->saveYearlyCWaterAsGrid();
+	  }
   }
   
   if (theOutputDetail>1)	// if many trials, produce condensed output
   {
 //	pRESULTS->saveDailyValues(theYear);
-//  keepGoing = pRESULTS->saveDailyLattCol(theYear);
 //  keepGoing = pRESULTS->savePersistence(maxYears, theYear);
   }
   

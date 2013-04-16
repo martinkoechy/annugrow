@@ -22,7 +22,7 @@ void SOILPARAMETERS::setForAllTypes(void)
   DepthA2 = 0.5; // dm
   DepthA3 = 0.5; // dm
   throughfall = 0.9; // [0;1], 0.7 = Belmonte Saerrato & Romero Diaz 1998
-  doRunon = false;
+  doRunon = true;
 }
 
 void SOILPARAMETERS::documentation(char* filename) const

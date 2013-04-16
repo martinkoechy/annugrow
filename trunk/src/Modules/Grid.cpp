@@ -7,7 +7,8 @@
  *
  */
 
-#include <iostream> // for testing
+#include <iostream>
+#include <fstream>
 #include <math.h>
 #include "MK_round.h"
 #include "MyTime.h"
@@ -145,24 +146,30 @@ void GRID::setVegetation (int percShrub, int r_cm, float relLight)
         tryAgain: continue;
       }
     }
-    showShrubs();
+	showShrubs();
   }
 }
 
 
 void GRID::showShrubs (void)
 {
-  for (int row = 0; row < theGridLengthR; row++)
-  {
-	std::cout << "   ";
-    for (int col = 0; col < theGridLengthC; col++)
-      if(theGrid[col][row].getVegetation() == shrub)
-		std::cout << char((theGrid[col][row].getShrubID()-1)%26 + 65) << " ";
-      else
-		std::cout << ". ";
-	std::cout << endl;
-  }
-  std::cout << endl;
+	std::ofstream ShrubDocu;
+	ShrubDocu.open (pRESULTS->theResultsList, std::ios::app);
+
+		ShrubDocu << "SSSSS" << endl;
+		for (int row = 0; row < theGridLengthR; row++)
+		{
+			ShrubDocu << "   ";
+			for (int col = 0; col < theGridLengthC; col++)
+				if(theGrid[col][row].getVegetation() == shrub)
+					ShrubDocu << char((theGrid[col][row].getShrubID()-1)%26 + 65) << " ";
+				else
+					ShrubDocu << ". ";
+			ShrubDocu << endl;
+		}
+		ShrubDocu << endl;
+		ShrubDocu << "TTTTT" << endl;
+	ShrubDocu.close();
 }
 
 /*mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm

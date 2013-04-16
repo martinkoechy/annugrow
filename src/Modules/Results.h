@@ -2,12 +2,13 @@
  *  Results.h
  *  intraspecific
  *
- *  Created by Martin Kšchy on Thu Feb 06 2003.
+ *  Created by Martin KÃ¶chy on Thu Feb 06 2003.
  *  Copyright (c) 2003 __MyCompanyName__. All rights reserved.
  *
  */
 
 #include "Parameters.h"
+#include "MK_round.h"
 #include "SoilParameters.h"
 #include "ClimateParameters.h"
 #include "SeedParameters.h"
@@ -32,7 +33,7 @@ class RESULTS
 		void zeroAnnualSums (void);
 	  void copyDailyValues (int day);
 	  void calcDailyValuesAcrossLattice (int day);
-	  void calcAnnualValuesForEachCell(void);
+	  void calcAnnualValuesForEachCell(int day);
 	  void calcMeanAnnualValues (void);
 	  void saveParameters (CLIMATE* pCLIMATE, SOILPARAMETERS* pSoilP, SEED_PARAMETERS* pSeedP, PLANT_PARAMETERS* pPlantP);
 		void saveRainDocumentation (int year);
@@ -70,8 +71,10 @@ class RESULTS
 		  int moist2[gridLengthC][gridLengthR];
 		  SPECIES S[gridLengthC][gridLengthR];
 		  float mass[gridLengthC][gridLengthR];
+		  float st_cr[gridLengthC][gridLengthR]; // standing crop
 		  long seedl[gridLengthC][gridLengthR];
 		  long indiv[gridLengthC][gridLengthR];
+		  long dIndiv[gridLengthC][gridLengthR];
 		  long mature[gridLengthC][gridLengthR];
 		};
 		
@@ -100,6 +103,7 @@ class RESULTS
 		  float   DMNbrMoistDays3[days_in_year];
 		  float   DMNbrMoistDays2[days_in_year];
 		  float DMMassGPM2[days_in_year];
+		  float DMStCrGPM2[days_in_year];
 		  float DSeedlPM2[days_in_year];
 		  float	DIndivPM2[days_in_year];
 		  float DMaturePM2[days_in_year];
@@ -131,6 +135,7 @@ class RESULTS
 		  float AMassGPM2;
 		  float ASeedlPM2;
 		  float  AIndivPM2;
+			float AdIndivPM2;
 		  float AMaturePM2;
 		  float ASeedsPM2;
 		  float ASeedbankPM2;
@@ -163,7 +168,7 @@ class RESULTS
 		int		theTrial;
 		int	theGridLengthC;
 		int	theGridLengthR;
-		float theGridArea;
+		float theGridSize;
 		float	theStationID;
 		int		theStationYR;
 		const char* theSimID;
@@ -172,6 +177,8 @@ class RESULTS
 		int theNbrOfMoistDays2[gridLengthC][gridLengthR];
 		RAIN* pRAIN;
 		GRID* pGRID;
+	
+	long theIndivDay[days_in_year];
 		};
 
 //------------------------------------------------------------------

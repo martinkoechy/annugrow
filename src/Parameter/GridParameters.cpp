@@ -2,7 +2,7 @@
  *  GridParameters.cpp
  *  intraspecific
  *
- *  Created by Martin Kšchy on Tue May 27 2003.
+ *  Created by Martin KÃ¶chy on Tue May 27 2003.
  *  Copyright (c) 2003 __MyCompanyName__. All rights reserved.
  *
  */
@@ -38,11 +38,9 @@ void GRIDPARAMETERS::documentation(char* filename) const
   ParameterDocu << " (" << theGridLengthC*theGridLengthR*cellArea/10000.0 << " m2)" << endl;
   ParameterDocu << "variation in water accumulation [0,1]:  \t" << moistureTopoV << endl;
   ParameterDocu << "stoniness [0,1]:\t" << stoniness << endl;	
-  ParameterDocu << "stoniness range ±[0,1]:\t" << stoninessV << endl;	
+  ParameterDocu << "stoniness range Â±[0,1]:\t" << stoninessV << endl;	
   ParameterDocu << "shrub cover (%):\t" << shrubCover << endl;
   ParameterDocu << "shrub radius (cm):\t" << shrubRadius << endl;
   
-  
   ParameterDocu.close();
 }
-

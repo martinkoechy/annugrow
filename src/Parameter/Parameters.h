@@ -1,7 +1,7 @@
 /*
  *  Parameters.h
  *
- *  Created by Martin Köchy on Tue Apr 29 2003.
+ *  Created by Martin K√∂chy on Tue Apr 29 2003.
  *  Copyright (c) 2003 __MyCompanyName__. All rights reserved.
  *
  */
@@ -19,9 +19,9 @@ enum SPECIES  {noSpec, AveSteri, BiscDid, BraDist, BromFasc, CarrAnn, CriDeli, F
 enum NSupplyQ {zero, low, medium, high};
 enum cover {bare, herb, shrub, hus};
 
-const int gridLengthC = 25;	// seitwärts; cell units, 50*50*4 = 1 m2, 71*71*2 = 1 m2
-const int gridLengthR = 25; // abwärts; 38*38*1 = 0.15 m2
-// large grids result in EXC_BAD_ACCESS errors on Mac
+const int gridLengthC = 50;	// seitw√§rts; cell units, 50*50*4 = 1 m2, 71*71*2 = 1 m2
+const int gridLengthR = 50; // abw√§rts; 38*38*1 = 0.15 m2
+// large grids result in EXC_BAD_ACCESS errors or Segmentation faults
 
 const float cellArea = 1.0; // cm2
 const int days_in_year = 365;

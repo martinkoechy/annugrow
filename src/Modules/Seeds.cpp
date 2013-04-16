@@ -189,7 +189,8 @@ long SEEDS::predation (long newSeeds, double survivalRate, double sRV)
 
 /*mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
 
-This function summerizes the loss of viable seeds in the seedbank (before dispersed seeds are added) between two growth periods
+This function summerizes the loss of viable seeds in the seedbank 
+ (before dispersed seeds are added) between two growth periods
 
 */
 

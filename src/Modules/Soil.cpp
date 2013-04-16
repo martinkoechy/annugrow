@@ -2,7 +2,7 @@
  *  Soil.cpp
  *  intraspecific
  *
- *  Created by Martin Kšchy on Thu Feb 06 2003.
+ *  Created by Martin KÃ¶chy on Thu Feb 06 2003.
  *  Copyright (c) 2003 __MyCompanyName__. All rights reserved.
  *
  */
@@ -18,7 +18,7 @@
 */
 
 const float SOIL::pi = 3.1415926;
-const float SOIL::FKPsi_MPa = maxPsi; // geŠndert 2005-01-28
+const float SOIL::FKPsi_MPa = maxPsi; // geÃ¤ndert 2005-01-28
 const float SOIL::PsiMin_MPa = -150.0;
 float SOIL::theTIndex = 0.0;
 float SOIL::theTemperature = 20.0;
@@ -215,8 +215,11 @@ effect of shrubs
 float SOIL::throughfall (float water)
 {
   float throughfall = 0.0;
-  throughfall = pP->throughfall * water; //; // 0.7 = Belmonte Saerrato & Romero Diaz 1998
-  theOAWaterET += ((1.0 - pP->throughfall) * water);
+//  throughfall = pP->throughfall * water; //; // 0.7 = Belmonte Saerrato & Romero Diaz 1998
+//  theOAWaterET += ((1.0 - pP->throughfall) * water);
+	throughfall = water > 0.4? water - 0.4 : 0.0;
+	theOAWaterET+= water - throughfall; // LAI â‰ˆ 0.8 (see Wadiscape), leaves retain c. 0.5 mm of water
+	
   return throughfall;
 }
 
@@ -249,7 +252,7 @@ float SOIL::runoff (float water)
 	infRate = infRate - 0.9 * pP->deltaInfRate * minMoisture; }
   else
   {  infRate = pP->infRateBare;
-	infRate = infRate - 1.0 * pP->deltaInfRate * minMoisture; // according to Cerdˆ & Sara 1998
+	infRate = infRate - 1.0 * pP->deltaInfRate * minMoisture; // according to CerdÃ  & Sara 1998
   }
   drain = infRate * water;
   
@@ -267,8 +270,13 @@ float SOIL::runoff (float water)
 
 _infiltration_
 
-This function carries out the infiltration process. Infiltration is immediate. The upper layer is filled up first, then the next layer is filled (tipping-bucket model). The return value could be used for modelling groundwater recharge. "Abflussbildung und Bodenfeuchtedynamik zwischen FeldkapazitŠt und SŠttigung lŠuft nach unseren Messungen (wir arbeiten in 5-Minutenauflšsung) in der Hangskale auf alle FŠlle in wenigen Minuten ab." (Jens Lange, Freiburg). Therefore, soil water drops immediately to FK after infiltration. (changed in version 2.4.6)
- 
+This function carries out the infiltration process. Infiltration is immediate. The upper 
+ layer is filled up first, then the next layer is filled (tipping-bucket model). The 
+ return value could be used for modelling groundwater recharge. "Abflussbildung und 
+ Bodenfeuchtedynamik zwischen FeldkapazitÃ¤t und SÃ¤ttigung lÃ¤uft nach unseren Messungen 
+ (wir arbeiten in 5-MinutenauflÃ¶sung) in der Hangskale auf alle FÃ¤lle in wenigen Minuten 
+ ab." (Jens Lange, Freiburg). Therefore, soil water drops immediately to FK after 
+ infiltration. (changed in version 2.4.6)
 */
 
 float SOIL::infiltration (float drainWater)
@@ -310,7 +318,7 @@ float SOIL::evaporation (void)
   float mass = pIndividual->getMass();
 
   //evaporation factors for each layer, bare ground
-  // ef1 ³ 2.0 !!! otherwise, not enough water can evaporate per day!!!
+  // ef1 â‰¥ 2.0 !!! otherwise, not enough water can evaporate per day!!!
   float efO = pP->EvapoO, ef1 = pP->EvapoA1, ef2 = 1.0, ef3 = 1.0, ef4 = 1.0;
   
  // transpiration from herbaceaus vegetation
@@ -325,7 +333,7 @@ float SOIL::evaporation (void)
  // shrubs reduce evaporation
  // no water uptake by shrubs from A4, otherwise all soil layers too dry
   if (theVegetation >= shrub)
-  {  efO *= 0.8; ef1 *= 0.9;}
+  {  efO *= 0.4; ef1 *= 0.5; ef2*=1.0; ef3*=1.05; ef4*=1.25;}
   
   efO *= theTemperature; 
   
@@ -441,7 +449,7 @@ van Genuchten equation (http://ahti.hut.fi/~tkarvone/sgh_7pf.htm)
   the hydraulic conductivity of unsaturated soils. Soil Sci. Soc. Am. J. 
   44: 892-898.
   
-The water is concentrated in a layer of 1 dm. When the layer is full (>P.mmFK), it spills over into the next layer. I assume that the roots take up water from the layer where it is best available. Therefore, I calculate Psi for the layer (²1) with the most water.
+The water is concentrated in a layer of 1 dm. When the layer is full (>P.mmFK), it spills over into the next layer. I assume that the roots take up water from the layer where it is best available. Therefore, I calculate Psi for the layer (â‰¤1) with the most water.
 
 */
 
@@ -586,11 +594,12 @@ SEEDS SOIL::getSeedbank(void) const{
 SEEDS* SOIL::getPSeedbank(void){
   return pSeedbank;}
 
-float SOIL::getResourceShare (float weight) const {
-  if (pIndividual->isEstablished() || theOldResourceSum == 0.0)
+float SOIL::getResourceShare (float mass) const {
+ if (pIndividual->isEstablished() || theOldResourceSum == 0.0)
+//	if (pIndividual->getMass() > mass || theOldResourceSum == 0.0)
 	return 0.0;
   else
-	return weight/theOldResourceSum;}
+	return mass/theOldResourceSum;}
 
 NSupplyQ SOIL::getNSupply (void) const{
   return pP->NSupply;}

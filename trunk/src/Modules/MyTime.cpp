@@ -164,7 +164,7 @@ bool TIME::getResults (int maxYears)
   
   if (theOutputDetail>1)	// if many trials, produce condensed output
   {
-//	pRESULTS->saveDailyValues(theYear);
+	pRESULTS->saveDailyValues(theYear);
 //  keepGoing = pRESULTS->savePersistence(maxYears, theYear);
   }
   

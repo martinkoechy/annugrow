@@ -269,14 +269,14 @@ void RESULTS::calcAnnualValuesForEachCell(int day)
 	  }
 	  if(theDailyCell.moist3[col][row] == 1)
 		theNbrOfMoistDays3[col][row] ++;
-	  if(theDailyCell.moist5[col][row] == 0 || day == days_in_year-1) {
+	  if(theDailyCell.moist3[col][row] == 0 || day == days_in_year-1) {
 		if (theNbrOfMoistDays3[col][row] > theAnnualSumCell.moist3[col][row])
 		  theAnnualSumCell.moist3[col][row] = theNbrOfMoistDays3[col][row];
 		theNbrOfMoistDays3[col][row] = 0;	 
 	  }
 	  if(theDailyCell.moist2[col][row] == 1)
 		theNbrOfMoistDays2[col][row] ++;
-	  if(theDailyCell.moist5[col][row] == 0 || day == days_in_year-1) {
+	  if(theDailyCell.moist2[col][row] == 0 || day == days_in_year-1) {
 		if (theNbrOfMoistDays2[col][row] > theAnnualSumCell.moist2[col][row])
 		  theAnnualSumCell.moist2[col][row] = theNbrOfMoistDays2[col][row];
 		theNbrOfMoistDays2[col][row] = 0;	 

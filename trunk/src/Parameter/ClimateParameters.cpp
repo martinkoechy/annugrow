@@ -16,15 +16,14 @@ using namespace std;
 CLIMATE::CLIMATE(void)
 {
   strcpy(N, "batch climate");
-  theColdestDay = 15.625; // for setting X-value of minimum of cos function; this shifts the cos function by a half month (30.5 d) plus half a day.
 }
 
-CLIMATE::CLIMATE(float T_mean, float T_var, float rel_Light)
+CLIMATE::CLIMATE(float T_mean, float T_var, float d_min, float rel_Light)
 {
 	strcpy(	N, "custom climate");
 	theMeanT = T_mean;
 	theRangeT = T_var;
-	theColdestDay = 15.625; // for setting X-value of minimum of cos function
+	theColdestDay = d_min; // for setting X-value of minimum of cos function
 	relLight = rel_Light;
 }
 

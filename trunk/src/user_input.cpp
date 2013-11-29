@@ -168,7 +168,7 @@ string inputTClimate (CLIMATE* & pCLIMATE)
 						  cin >> light;
 					}
 					while (meanT < 15 || meanT > 25 || rangeT < 5 || rangeT > 15 || light < 0 || light > 100);
-					pCLIMATE = new CLIMATE(meanT, rangeT, light/100.0); name = "cIL_"; break;
+					pCLIMATE = new CLIMATE(meanT, rangeT, 15.625, light/100.0); name = "cIL_"; break;
 			default: cout << "Selection not available." << endl; selection = 0;
 		}
 	}

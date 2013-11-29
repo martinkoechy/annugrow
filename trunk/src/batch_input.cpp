@@ -59,6 +59,7 @@ short PARAMCOLL::read_parameter_file (ifstream & FParameters, const char* file_n
 	
 	FParameters >> climateP.theMeanT;
 	FParameters >> climateP.theRangeT;
+	FParameters >> climateP.theColdestDay;
 	FParameters >> climateP.relLight;
 	
 	FParameters >> gridP.moistureTopoV;

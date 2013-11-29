@@ -17,7 +17,7 @@ class CLIMATE
 {
 	public:
 	CLIMATE(void);
-    CLIMATE(float, float, float);
+    CLIMATE(float, float, float, float);
 	virtual ~CLIMATE() {};
 	float getMeanT (void) const {return theMeanT;};
 	float getRangeT (void) const {return theRangeT;};

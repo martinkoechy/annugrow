@@ -28,6 +28,7 @@
  *                longest wet period (moistd2 etc.) is now calculated correctly when the soil is moist during the summer
  *                new parameters based on more years
  * Version 2.7.1: corrected a mistake in moistD3, moistD2 output (variable moistD5 was used for resetting)
+ * Version 2.7.2: allowed batch input of coldest day
  */
 
 #include <fstream>

@@ -56,7 +56,7 @@ PreFile::PreFile(TIME* p_TIME, RAINPARAMETERS* p_RainP)
 {
   pTIME = p_TIME;
   pP = p_RainP;
-  theYear = -1;
+  theYear = 0;
   theYearsInDB = 0;
   theAnnualRain = 0.0;
   
@@ -82,13 +82,14 @@ PreFile::PreFile(TIME* p_TIME, RAINPARAMETERS* p_RainP)
 	
 	for (int d=0; d < days_in_year; d++)
 	  rainArchive >> singleYearData[d];
-
+	  if(singleYearData.sum()>0.0){
 	manipulateRain(singleYearData, pP->meanAP, singleYearID);
 
 	theRainDB.push_back(singleYearData);
 	theRainID.push_back(singleYearID);
 	
-	theYearsInDB++;
+		  theYearsInDB++;
+	  }
   }
   
   rainArchive.close();  
@@ -100,7 +101,11 @@ PreFile::PreFile(TIME* p_TIME, RAINPARAMETERS* p_RainP)
 
 void  PreFile::drawYear (void)
 {
-  theYear = r250n(theYearsInDB);
+  if(workOnSuppliedRainFileInOrderOfSequence) // defined in Parameters.h
+	  theYear++;
+	else
+	  theYear = r250n(theYearsInDB);
+	
   theAnnualRain = (theRainDB[theYear]).sum();
 }
 
@@ -199,7 +204,7 @@ void ReGen::calcRain (void)
 */  RegenVolume *= zexp;
 
   theRainDB[0] = RegenVolume;
-  theRainID[0][0] = 999; // Station-ID, wird hier nicht gebraucht
-  theRainID[0][1] = 999; // Regenjahr, wird hier nicht gebraucht
+  theRainID[0][0] = 999; // station-ID, not relevant here
+  theRainID[0][1] = 999; // rain-year, not relevant here
   
 }

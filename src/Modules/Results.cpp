@@ -21,7 +21,7 @@ using namespace std;
 /*mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
 */
 
-RESULTS::RESULTS(const char* baseFileName, int fileInput, const char* ID): theSimID(ID)
+RESULTS::RESULTS(const char* baseFileName, bool detailLevel, const char* ID): theSimID(ID)
 {
 	const char tagDLC [] = "_DLC.txt";
 	const char tagYCC [] = "_YCC.txt";
@@ -80,7 +80,7 @@ RESULTS::RESULTS(const char* baseFileName, int fileInput, const char* ID): theSi
     thePerHeader = false;
 	thePersistence = true;
 	
-	fileInput == 4 ? theFilebatch = true : theFilebatch=false;
+	theDetail = detailLevel;
 }
 
 RESULTS::~RESULTS()
@@ -430,9 +430,9 @@ void RESULTS::saveParameters (CLIMATE* pCLIMATE, SOILPARAMETERS* pSoilP, SEED_PA
   ParameterDocu.open (theResultsList, std::ios::app);
   
   ParameterDocu << "Date and time: " << ctime(&currentTime) << "\n\n" << endl;
-  ParameterDocu << "Version: 2.7.0\n\n" << endl;
+  ParameterDocu << "Version: 2.7.3\n\n" << endl;
   pGRID->pP->documentation(theResultsList);
-  if (!theFilebatch)
+  if (theDetail==true)
   {	pCLIMATE->documentation(theResultsList);
 	pSoilP->documentation(theResultsList);
 	pSeedP->documentation(theResultsList);
@@ -448,7 +448,7 @@ void RESULTS::saveParameters (CLIMATE* pCLIMATE, SOILPARAMETERS* pSoilP, SEED_PA
 
 void RESULTS::saveRainDocumentation (int year)
 {
-  if (!theFilebatch)
+  if (theDetail==true)
   {
   ofstream RainDocu;
   RainDocu.open(theResultsList, std::ios::app);
@@ -481,8 +481,8 @@ void RESULTS::saveRainDocumentation (int year)
 
 bool RESULTS::saveDailyValues (int year)
 {
-  if(!theFilebatch)// if(theFilebatch)
-  {
+	if(theDetail==true)
+	{
 	ofstream DLC;
 	DLC.open(theResultsDailyLattCol, std::ios::app);
 	
@@ -581,7 +581,7 @@ int nParameterCombos = 0; // global variable
 bool RESULTS::saveMeanYearlyValues (int year)
 {
   
-  if((theFilebatch && year>2) || !theFilebatch)
+  if((theDetail==true && year>2) || theDetail==false)
   {
   float	sumSeedbank = double(SEEDS::getNumberOfAllSeeds()) / (theGridSize * cellArea) * 10000.0;
   
@@ -693,7 +693,7 @@ void RESULTS::saveYearlyLattAsGrid (void)
 
 	for (int row = 0; row < theGridLengthR; row++)
 	{
-		for (int col = 0; col < theGridLengthC; col++)
+		for (int col = 0; col < theGridLengthC; col++) // choose one output but no more
 		{
 //			YLG << pGRID->getNbrGPtr(col,row)->getPSeedbank()->getNumber();
 //			YLG << pGRID->getNbrGPtr(col,row)->getPPlant()->getNewSeeds();
@@ -853,7 +853,7 @@ bool RESULTS::savePersistence (int maxYears, int year)
 
 void RESULTS::saveVegCover (void)
 {
-  if(theFilebatch)
+  if(theDetail==true)
   {
   ofstream ParameterDocu;
   ParameterDocu.open (theResultsList, std::ios::app);

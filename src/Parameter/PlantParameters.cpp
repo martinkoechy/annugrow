@@ -24,7 +24,7 @@ void PLANT_PARAMETERS::setForAllSpecies(void)
   MassFruit = 1.27*MassSeed; // mg, estimate
   MassEstablish = 5.0; // 5 mg
   MassFlowering = 35.0; // 35 mg, changed v 2.60
-  MassMax = 500.0; // mg; estimate, changed v 2.60
+  MassMax = 3500.0; // mg; estimate, changed v 2.60, changed from 500 to 3500, MK 2013-12-02
   RGR_Max = 0.17; // Dyer et al. 2001
   AllocationRepro = 0.60; // calculated from Aronson 1990;
   N_tolerance = high;

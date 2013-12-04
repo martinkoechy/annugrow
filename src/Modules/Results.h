@@ -25,7 +25,7 @@ class GRID;
 class RESULTS
 {	
 	public:
-		RESULTS (const char* baseFileName, int fileInput, const char* ID);
+		RESULTS (const char* baseFileName, bool detailLevel, const char* ID);
 		~RESULTS ();
 		
 		void setTrial (int trial);
@@ -163,7 +163,7 @@ class RESULTS
 		bool theRainHeader;
 		bool thePerHeader;
 		bool thePersistence;
-		bool theFilebatch;
+		bool theDetail;
 		
 		int		theTrial;
 		int	theGridLengthC;

@@ -13,7 +13,9 @@
 #define ParametersH
 //------------------------------------------------------------------
 
- enum SOILTYPE {noSoil, SlSB, LsLA, LsuBG, LtsMA, LtEJ, generic, batchSoil};
+enum inType {dialog=1, batch=4};
+
+enum SOILTYPE {noSoil, SlSB, LsLA, LsuBG, LtsMA, LtEJ, generic, batchSoil};
 enum SPECIES  {noSpec, AveSteri, BiscDid, BraDist, BromFasc, CarrAnn, CriDeli, FilDes, HippUni, HymCir, RebPin, SchisArab, StipCap, ValHis, annual, typMes, typMed, typSem, typAri, all, batchSpecies};
 
 enum NSupplyQ {zero, low, medium, high};
@@ -29,6 +31,8 @@ const float maxPsi = -0.01;
 
 // the distance over which competition and density dependent effects are effective
 const unsigned int cSuppress_dist = 2;
+
+const bool workOnSuppliedRainFileInOrderOfSequence = true;
 
 /*
 Where to switch off variability:

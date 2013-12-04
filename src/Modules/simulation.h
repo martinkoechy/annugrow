@@ -17,7 +17,7 @@
 #define SimulationH
 
 void simulation(const char* ID, int trials, int years, 
-				const char* name_of_results_files, int outfiles, 
+				const char* name_of_results_files, inType typeOfInput, 
 				RAINPARAMETERS* pRainP, CLIMATE* pClimateP, 
 				GRIDPARAMETERS* pGridP, SOILPARAMETERS* pSoilP, 
 				SEED_PARAMETERS* pSEEDPARAMETERS, PLANT_PARAMETERS* pPLANTPARAMETERS);

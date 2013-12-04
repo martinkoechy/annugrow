@@ -22,14 +22,14 @@
 */
 
 TIME::TIME  ( RESULTS* pResults,
-              int outputDetail,
+              int trials,
 			  RAINPARAMETERS* pRainP, CLIMATE* p_CLIMATE, GRIDPARAMETERS* pGridP, 
 			  SOILPARAMETERS* pSoilP, SEED_PARAMETERS* pSeedP, PLANT_PARAMETERS* pPlantP, 
 			  bool documented
 			  ) : pi(3.1415926)
 {
   pRESULTS = pResults;
-  theOutputDetail = outputDetail;
+  theTrials = trials;
 				
   pCLIMATE = p_CLIMATE;
   if (pRainP->isReGen)
@@ -71,7 +71,7 @@ void TIME::years_loop (int run_years)
 	pGRID->yearlyReset();
 	
 	informUser(theYear, run_years);
-	pRAIN->drawYear();
+	pRAIN->drawYear(); // go to function to choose random or ordered sequence
 	days_loop();		// each year
 	
 	pRESULTS->calcMeanAnnualValues();
@@ -111,7 +111,7 @@ void TIME::informUser(int year, int maxYr)
   if (maxYr <= 10)
 	std::cout << " Now doing year " << year << std::endl;
   else
-	if (theOutputDetail!=1)
+	//if (theTrials)
 	  if (year%10 == 0)
 		std::cout << " Now doing years " << year << "-" << (year+9>maxYr?maxYr:year+9) << std::endl;
 }
@@ -148,26 +148,23 @@ bool TIME::getResults (int maxYears)
   pRESULTS->saveRainDocumentation(theYear); // for all
   keepGoing = pRESULTS->saveMeanYearlyValues(theYear);
   
-  if (theOutputDetail)	// if only one trial, produce detailed output
-  {
-	  if (maxYears <= 5) {
-		pRESULTS->saveDailyValues(theYear);
-			pRESULTS->saveYearlyLattAsGrid();
-			pRESULTS->saveYearlyRunoffAsGrid();
-			pRESULTS->saveYearlyPotA1AsGrid();
-			pRESULTS->saveYearlyPotA2AsGrid();
-			pRESULTS->saveYearlyPotA3AsGrid();
-			pRESULTS->saveYearlyPotA4AsGrid();
-			pRESULTS->saveYearlyCWaterAsGrid();
-	  }
-  }
-  
-  if (theOutputDetail>1)	// if many trials, produce condensed output
-  {
-	pRESULTS->saveDailyValues(theYear);
-//  keepGoing = pRESULTS->savePersistence(maxYears, theYear);
-  }
-  
+		pRESULTS->saveDailyValues(theYear); // output of mean biomass across grid per day
+		//  keepGoing = pRESULTS->savePersistence(maxYears, theYear);
+
+		if (theTrials==1)	// if only one trial, produce additional output
+		{
+			if (maxYears <= 3) {
+//			pRESULTS->saveYearlyLattAsGrid(); // additional output of max biomass as cell matrix
+//			pRESULTS->saveYearlyRunoffAsGrid(); // additional output of runoff as cell matrix
+//			pRESULTS->saveYearlyPotA1AsGrid(); // additional output of pot in A1 as cell matrix
+//			pRESULTS->saveYearlyPotA2AsGrid(); // additional output of pot in A2 as cell matrix
+//			pRESULTS->saveYearlyPotA3AsGrid(); // additional output of pot in A3 as cell matrix
+//			pRESULTS->saveYearlyPotA4AsGrid(); // additional output of pot in A4 as cell matrix
+//			pRESULTS->saveYearlyCWaterAsGrid(); // additional output of water in C as cell matrix
+			}
+		}
+
+    
   return keepGoing; 
 }
 

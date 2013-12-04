@@ -336,6 +336,7 @@ float SOIL::evaporation (void)
   {  efO *= 0.4; ef1 *= 0.5; ef2*=1.0; ef3*=1.05; ef4*=1.25;}
   
   efO *= theTemperature; 
+	efO = efO<=0? 0.1: efO; // prevent negative values, MK 2013-12-02
   
   // evaporation from O layer
   theOWater = reducePotential(theOWater, theDepthO, efO);
@@ -501,7 +502,7 @@ inverse of getPotential()
 float SOIL::calcVolumetricWater (float psi, float d) const
 {
   if (psi < PsiMin_MPa) psi = PsiMin_MPa;
-  float theta = 0.0;
+  float theta = pP->thetaR;
   double saturation = 0.0;
 
   saturation = 1.0 + pow(double(pP->alpha * -psi), double(pP->beta));

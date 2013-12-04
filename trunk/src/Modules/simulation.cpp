@@ -13,17 +13,20 @@
 #include "simulation.h"
 
 void simulation (const char* ID, int trials, int years, 
-				 const char* name_of_results_files, int outfiles, 
+				 const char* name_of_results_files, inType inTypeMethod, 
 				 RAINPARAMETERS* pRainP, CLIMATE* pClimateP, 
 				 GRIDPARAMETERS* pGridP, SOILPARAMETERS* pSoilP, 
 				 SEED_PARAMETERS* pSeedP, PLANT_PARAMETERS* pPlantP)
 {
   startMessage();
+  // the max number of trials for detailed output must be adjusted here, in MyTime.cpp:151ff and Results.cpp
+	
+	bool detailsLevel = trials<4?true:false;
+	
+  RESULTS results(name_of_results_files, detailsLevel, ID); 
   
-  RESULTS results(name_of_results_files, outfiles, ID);
-  
-  if (outfiles != 4)
-	outfiles = outputMessage(trials);
+  if (inTypeMethod != batch)
+	outputMessage(trials);
   
   for (int i=0; i<trials; i++)
   {
@@ -31,7 +34,7 @@ void simulation (const char* ID, int trials, int years,
 	
 	results.setTrial(i);
 	
-	TIME theTime (&results, outfiles, pRainP, pClimateP, pGridP, pSoilP, pSeedP, pPlantP, i);
+	TIME theTime (&results, trials, pRainP, pClimateP, pGridP, pSoilP, pSeedP, pPlantP, i);
 	
 	theTime.years_loop(years);
   }

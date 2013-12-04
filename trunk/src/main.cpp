@@ -29,6 +29,11 @@
  *                new parameters based on more years
  * Version 2.7.1: corrected a mistake in moistD3, moistD2 output (variable moistD5 was used for resetting)
  * Version 2.7.2: allowed batch input of coldest day
+ * Version 2.7.3: small enhancements: option to switch on/off random selection of years from external rain file 
+ *                 (in Parameters.h), check that rain input routine does not store blank final line, streamlined the
+ *                 setting of output detail depending on number of trials, batch input
+ *
+ * [adjust version number in Results.cpp:433]
  */
 
 #include <fstream>
@@ -39,7 +44,6 @@
 #include "user_input.h"
 #include "simulation.h"
 #include "batch_input.h"
-
 
 using namespace std;
 
@@ -62,7 +66,8 @@ int main (int argc, const char * argv[])
   int years = 0;
   int trials = 0;
   
-  string RPath =  "./../../../Regen/";   // on Mac use single forward slash, on PC use double backslashes
+ // string RPath =  "./../../Rain/";   // on Mac use single forward slash, on PC use double backslashes
+	string RPath =  "";   // for use in MACSUR trials
   pRAINPARAMETERS->RFilePath = RPath;
   
   string name_of_rain_file = "somewhere";
@@ -125,7 +130,7 @@ int main (int argc, const char * argv[])
 				   pBatchP->trials, 
 				   pBatchP->years, 
 				   pResultsFileNameC, 
-				   4, // file batch simulation
+				   batch,
 				   pRAINPARAMETERS, pCLIMATE, pGRIDPARAMETERS, 
 				   pSOILPARAMETERS, pSEEDPARAMETERS, pPLANTPARAMETERS);
 
@@ -205,7 +210,7 @@ int main (int argc, const char * argv[])
 						// -------- START SIMULATION =======================
 						simulation("u", trials, years, 
 								   name_of_results_files.c_str(),
-								   3, // user input
+								   dialog, // user input
 								   pRAINPARAMETERS, pCLIMATE, pGRIDPARAMETERS,
 								   pSOILPARAMETERS, pSEEDPARAMETERS, pPLANTPARAMETERS);
 						// -------- END SIMULATION =========================

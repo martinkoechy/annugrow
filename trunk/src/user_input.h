@@ -37,7 +37,7 @@ void RainVolume (vector <float> & mean_batch);
 int inputYears (void);
 int inputTrials (void);
 void trialsMessage (int trials, int trial);
-int outputMessage (int trials);
+bool outputMessage (int trials);
 int repeatMessage (void);
 void startMessage (void);
 void finishedMessage (void);

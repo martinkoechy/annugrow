@@ -302,9 +302,9 @@ int inputTrials (void)
 
 //---------------------------- OUTPUT --------------------------------
 
-int outputMessage (int trials)
+bool outputMessage (int trials)
 {
-	int outfiles = 0;
+	int myDetail = false;
 	
 	if (trials == 1)
 	{
@@ -314,7 +314,7 @@ int outputMessage (int trials)
 		cout << " 3. [ _YCC] annual values for each cell, printed in columns,\n";
 		cout << " 4. [ _YLC] annual means across cells, printed in columns,\n";
 		cout << " 5. [ _YLG] annual mean of one variable for each cell, printed in rows and columns\n " << endl;
-		outfiles = 3;
+		myDetail = true;
 	}
 	else
 	{
@@ -323,10 +323,10 @@ int outputMessage (int trials)
 		cout << " 2. [ _DLC] daily values (rain, #plants, soil psi) averaged across cells,\n";
 		cout << " 3. [ _per] years of population persistence,\n";
 		cout << " 4. [ _YLC] annual means across cells, printed in columns.\n"<< endl;
-		outfiles = 1;
+		myDetail = false;
 	}
 
-	return outfiles;
+	return myDetail;
 }
 
 void rainMessage (string scenario)

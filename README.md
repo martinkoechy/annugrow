@@ -8,7 +8,7 @@ V2.7.0 (r14) contains changes for testing inverse-hypothesis effect and the calc
 
 V2.7.1 (r15) fixes a mistake in moistD3, moistD2 output.
 
-For further information on the changes, please see the [https://code.google.com/p/annugrow/source/browse/#svn%2Ftrunk%2Fsrc main.cpp] file.
+For further information on the changes, please see the [https://github.com/martinkoechy/annugrow/blob/master/src/main.cpp main.cpp] file.
 
 
 Automatically exported from code.google.com/p/annugrow
